@@ -407,6 +407,29 @@
   .success-screen {
     text-align: center;
     padding: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .floating-objects {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .floating-obj {
+    position: absolute;
+    font-size: 28px;
+    animation: floatUp linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100%) rotate(0deg) scale(0.5); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-600px) rotate(360deg) scale(1); opacity: 0; }
   }
 
   .success-icon {
@@ -594,7 +617,7 @@
       <p class="subtitle" data-i18n="step1Subtitle">Podaj dane, abyśmy mogli się z Tobą skontaktować</p>
       <div class="input-group">
         <label data-i18n="labelName">Imię</label>
-        <input type="text" id="userName" name="name" autocomplete="name" data-i18n-placeholder="placeholderName" placeholder="Np. Oleksandr Kovalenko">
+        <input type="text" id="userName" name="name" autocomplete="name" data-i18n-placeholder="placeholderName" placeholder="Np. Oleksandr">
       </div>
       <div class="input-group">
         <label data-i18n="labelEmail">Email</label>
@@ -743,6 +766,7 @@
   <!-- Success screen -->
   <div class="form-step" id="success">
     <div class="success-screen">
+      <div class="floating-objects" id="floatingObjects"></div>
       <div class="success-icon">✓</div>
       <h2 data-i18n="successTitle">Gotowe! Dziękujemy 🎉</h2>
       <p data-i18n="successMsg">Twoje zgłoszenie zostało przyjęte. Skontaktujemy się z Tobą przed podróżą, aby wszystko przygotować.</p>
@@ -800,7 +824,7 @@
       step1Subtitle: 'Podaj dane, abyśmy mogli się z Tobą skontaktować',
       labelName: 'Imię',
       labelEmail: 'Email',
-      placeholderName: 'Np. Oleksandr Kovalenko',
+      placeholderName: 'Np. Oleksandr',
       placeholderEmail: 'twoj@email.com',
       btnNext: 'Dalej →',
       btnBack: '← Wstecz',
@@ -866,7 +890,7 @@
       step1Subtitle: 'Вкажи дані, щоб ми могли зв\'язатися з тобою',
       labelName: 'Ім\'я',
       labelEmail: 'Email',
-      placeholderName: 'Напр. Олександр Коваленко',
+      placeholderName: 'Напр. Олександр',
       placeholderEmail: 'tvij@email.com',
       btnNext: 'Далі →',
       btnBack: '← Назад',
@@ -932,7 +956,7 @@
       step1Subtitle: 'Provide your details so we can get in touch',
       labelName: 'Name',
       labelEmail: 'Email',
-      placeholderName: 'e.g. Oleksandr Kovalenko',
+      placeholderName: 'e.g. Oleksandr',
       placeholderEmail: 'your@email.com',
       btnNext: 'Next →',
       btnBack: '← Back',
@@ -1094,6 +1118,25 @@
     document.getElementById('progressBar').style.display = 'none';
     document.getElementById('stepLabel').style.display = 'none';
     document.getElementById('langSwitcher').style.display = 'none';
+    document.querySelector('.header').style.display = id === 'success' ? 'none' : '';
+    if (id === 'success') spawnFloatingObjects();
+  }
+
+  function spawnFloatingObjects() {
+    const items = ['💻','📱','👗','👜','🎒','👟','⌚','🕶️','👠','🧥','💍','🛍️'];
+    const container = document.getElementById('floatingObjects');
+    container.innerHTML = '';
+    for (let i = 0; i < 20; i++) {
+      const el = document.createElement('span');
+      el.className = 'floating-obj';
+      el.textContent = items[Math.floor(Math.random() * items.length)];
+      el.style.left = Math.random() * 100 + '%';
+      el.style.bottom = '-40px';
+      el.style.animationDuration = (3 + Math.random() * 4) + 's';
+      el.style.animationDelay = (Math.random() * 5) + 's';
+      el.style.fontSize = (20 + Math.random() * 20) + 'px';
+      container.appendChild(el);
+    }
   }
 
   function selectToggle(el, key, value) {
@@ -1248,6 +1291,7 @@
     });
     document.getElementById('progressBar').style.display = 'flex';
     document.getElementById('stepLabel').style.display = 'block';
+    document.querySelector('.header').style.display = '';
     showStep(1);
   }
 
